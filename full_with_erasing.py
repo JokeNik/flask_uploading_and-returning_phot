@@ -17,6 +17,8 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['file']
         if file and (file.content_type.rsplit('/', 1)[1] in ALLOWED_EXTENSIONS).__bool__():
+            zipfile.ZipFile('/home/popashka/d.zip', 'w')
+            os.remove('/home/popashka/d.zip')
             filename = secure_filename(file.filename)
             file.save(app.config['UPLOAD_FOLDER'] + filename)
             pat = UPLOAD_FOLDER + filename
