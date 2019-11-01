@@ -4,6 +4,7 @@ from flask import Flask, request, send_from_directory, send_file, Response
 from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = '/home/popashka/easy/uploads/'
+ZIP = '/home/popashka/d.zip'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3', 'mp4'}
 
 app = Flask(__name__)
@@ -17,20 +18,20 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['file']
         if file and (file.content_type.rsplit('/', 1)[1] in ALLOWED_EXTENSIONS).__bool__():
-            zipfile.ZipFile('/home/popashka/d.zip', 'w')
-            os.remove('/home/popashka/d.zip')
+            zipfile.ZipFile(ZIP, 'w')
+            os.remove(ZIP)
             filename = secure_filename(file.filename)
             file.save(app.config['UPLOAD_FOLDER'] + filename)
             pat = UPLOAD_FOLDER + filename
             filename = pat
-            with zipfile.ZipFile('/home/popashka/d.zip', 'a') as myzip:
+            with zipfile.ZipFile(ZIP, 'a') as myzip:
                 myzip.write(pat, filename)
-            res =  send_file('/home/popashka/d.zip',
+            res =  send_file(ZIP,
                             mimetype='application/octet-stream',
                             as_attachment=True,
                             attachment_filename='d.zip')
             myzip.close()
-            os.remove('/home/popashka/d.zip')
+            os.remove(ZIP)
             return res
 
 
